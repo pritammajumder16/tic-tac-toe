@@ -3,7 +3,7 @@
     <div
       class="grid-items"
       (click)="playTurn(item)"
-      *ngFor="let item of gridBoxes; index as i"
+      *ngFor="let item of gameGridBoxes; index as i"
     >
       <!-- [ngClass]="item.value == 'P1' ? 'P1' : item.value == 'P2' ? 'P2' : ''" -->
       <span class="item-label" *ngIf="item.value == 'P1'">X</span>
@@ -11,12 +11,12 @@
       <span class="item-label" *ngIf="item.value == 'P2'">O</span>
     </div>
   </div>
-  <p *ngIf="!winningPlayer && !matchDraw" class="turn-label">
-    Current turn is for : {{ currentPlayer }}
+  <p *ngIf="!winningPlayer && !matchDraw" class="turn-label turn-label-2">
+    Current turn is for : {{ currentPlayer ? "Player 1" : "Player 2" }}
   </p>
-  <p *ngIf="winningPlayer && !matchDraw" class="turn-label">
+  <p *ngIf="winningPlayer && !matchDraw" class="turn-label turn-label-3">
     Game won by : {{ winningPlayer }}
   </p>
-  <p *ngIf="matchDraw" class="turn-label">The match was a draw</p>
+  <p *ngIf="matchDraw" class="turn-label turn-label-1">The match was a draw</p>
   <button (click)="resetGame()" class="btn">Reset</button>
 </div>

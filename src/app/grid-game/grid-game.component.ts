@@ -1,12 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { GameStateService } from '../game-state.service';
-
-type TPlayer = 'P1' | 'P2' | null;
-interface IGridBox {
-  id: number;
-  value: TPlayer;
-}
+import { IGridBox } from '../../../constants/interfaces';
+import { TPlayer } from '../../../constants/types';
+import { gridBoxes, winValues } from '../../../constants/game-logic';
 @Component({
   selector: 'app-grid-game',
   standalone: true,
@@ -15,55 +12,12 @@ interface IGridBox {
   styleUrl: './grid-game.component.scss',
 })
 export class GridGameComponent {
-  constructor(private _gameStateService: GameStateService) {}
-  private winValues = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-    [1, 4, 7],
-    [2, 5, 8],
-    [3, 6, 9],
-    [1, 5, 9],
-    [3, 5, 7],
-  ];
-  public gridBoxes: IGridBox[] = [
-    {
-      id: 1,
-      value: null,
-    },
-    {
-      id: 2,
-      value: null,
-    },
-    {
-      id: 3,
-      value: null,
-    },
-    {
-      id: 4,
-      value: null,
-    },
-    {
-      id: 5,
-      value: null,
-    },
-    {
-      id: 6,
-      value: null,
-    },
-    {
-      id: 7,
-      value: null,
-    },
-    {
-      id: 8,
-      value: null,
-    },
-    {
-      id: 9,
-      value: null,
-    },
-  ];
+  public gameGridBoxes;
+  private winningVals;
+  constructor(private _gameStateService: GameStateService) {
+    this.gameGridBoxes = gridBoxes;
+    this.winningVals = winValues;
+  }
   public currentPlayer: TPlayer = 'P1';
   public winningPlayer: TPlayer = null;
   public matchDraw: boolean = false;
@@ -71,12 +25,12 @@ export class GridGameComponent {
     if (this.winningPlayer) {
       return;
     }
-    const indx = this.gridBoxes.findIndex((grid) => grid.id == item.id);
-    if (this.gridBoxes[indx].value) {
+    const indx = this.gameGridBoxes.findIndex((grid) => grid.id == item.id);
+    if (this.gameGridBoxes[indx].value) {
       return;
     }
     if (indx >= 0) {
-      this.gridBoxes[indx].value = this.currentPlayer;
+      this.gameGridBoxes[indx].value = this.currentPlayer;
     }
     this.detectWin(this.currentPlayer!);
     this.detectDraw();
@@ -89,7 +43,7 @@ export class GridGameComponent {
   detectDraw() {
     if (this.winningPlayer) return;
     let notDraw = false;
-    this.gridBoxes.forEach((item) => {
+    this.gameGridBoxes.forEach((item) => {
       if (!item.value) {
         notDraw = true;
       }
@@ -99,11 +53,11 @@ export class GridGameComponent {
     }
   }
   detectWin(player: 'P1' | 'P2') {
-    console.log(this.gridBoxes[0].value, player);
-    this.winValues.forEach((values) => {
+    console.log(this.gameGridBoxes[0].value, player);
+    this.winningVals.forEach((values) => {
       let matchCount = 0;
       values.forEach((val) => {
-        if (this.gridBoxes[val - 1].value == player) {
+        if (this.gameGridBoxes[val - 1].value == player) {
           matchCount++;
         }
       });
@@ -118,7 +72,7 @@ export class GridGameComponent {
   }
   resetGame() {
     this.winningPlayer = null;
-    this.gridBoxes.forEach((grid) => {
+    this.gameGridBoxes.forEach((grid) => {
       grid.value = null;
     });
     this.matchDraw = false;
